@@ -8,7 +8,7 @@ pipeline {
 		string(name: 'version', defaultValue: '1.0.0', description: 'Application Version')
 		
 		// After build step there is a copy step, where we copy the build to the CloudXR servers
-		string(name: 'servers', defaultValue: 'WIN-IDSFOODBSIU', description: 'Separate server name by space')
+		string(name: 'servers', defaultValue: 'server1', description: 'Separate server name by space')
 		booleanParam(name: 'copyToVMs', defaultValue: false, description: 'whether to copy the builds to the VM drives. Skip this step when you are not on network')
     }
 
