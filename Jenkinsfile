@@ -27,7 +27,7 @@ pipeline {
         ::\"${DOTNET_PATH}\" restore
     	::\"${DOTNET_PATH}\" rebuild
         ::\"${DOTNET_PATH}\" build --configuration ${build}
-        \"${MSBUILD}\" \"${appname}.csproj\" -t:Pack -p:Configuration=${build} 
+        \"${MSBUILD}\" \"${appname}.csproj\" -p:Configuration=${build} 
 
 		::set servers=${servers}
 		::mkdir STE
