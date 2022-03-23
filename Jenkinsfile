@@ -23,7 +23,7 @@ pipeline {
     stages {
         stage ('Build') { steps { script { bat """
         echo "Path: %path%"
-        cd \"${appname}\\${appname}\"	    
+        cd \"${appname}\"	    
         ::\"${DOTNET_PATH}\" restore
     	::\"${DOTNET_PATH}\" rebuild
         ::\"${DOTNET_PATH}\" build --configuration ${build}
