@@ -9,7 +9,7 @@ pipeline {
 		
 		// After build step there is a copy step, where we copy the build to the CloudXR servers
 		string(name: 'servers', defaultValue: 'server1', description: 'Separate server name by space')
-		booleanParam(name: 'copyToVMs', defaultValue: false, description: 'whether to copy the builds to the VM drives. Skip this step when you are not on network')
+		booleanParam(name: 'copy', defaultValue: false, description: 'whether to copy the builds to the VM drives. Skip this step when you are not on network')
     }
 
     agent any 
@@ -26,26 +26,25 @@ pipeline {
         ::\"${DOTNET_PATH}\" restore
     	::\"${DOTNET_PATH}\" rebuild
         ::\"${DOTNET_PATH}\" build --configuration ${build}
-        \"${MSBUILD}\" \"${appname}.sln\" -p:Configuration=${build} 
-
-		::set servers=${servers}
-		::mkdir STE
+        \"${MSBUILD}\" \"${appname}.sln\" -p:Configuration=${build} 	
 		
-		\"${DOTNET_PATH}\" \"${scannerhome}\\SonarScanner.MSBuild.dll\" begin /key:STE /d:sonar.login=${login_token}
+		\"${DOTNET_PATH}\" \"${scannerhome}\\SonarScanner.MSBuild.dll\" begin /key:${appname} /d:sonar.login=${login_token}
 		\"${DOTNET_PATH}\" build \"${appname}.sln\"
 		\"${DOTNET_PATH}\" \"${scannerhome}\\SonarScanner.MSBuild.dll\" end /d:sonar.login=${login_token}		
 
         """ }}} // end build stage
 
         stage ('Copy') { steps { script { bat """
+        when { environment name: 'copy', value: 'true' }
+
         (for %%s in (%servers%) do (
 
 				echo %%s
-				rmdir \\\\%%s\\Build\\STE /s /q
-				echo d|xcopy /y /e /s bin\\${build} \\\\%%s\\Build\\STE
+				rmdir \\\\%%s\\Build\\${appname} /s /q
+				echo d|xcopy /y /e /s bin\\${build} \\\\%%s\\Build\\${appname}
 				echo.>version.txt
 				echo ${version} >>version.txt
-				xcopy /y version.txt \\\\%%s\\Build\\STE
+				xcopy /y version.txt \\\\%%s\\Build\\${appname}
 			))
         """ }}} // end copy stage
 
