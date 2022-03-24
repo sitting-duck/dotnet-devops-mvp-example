@@ -32,6 +32,8 @@ pipeline {
 		::mkdir STE
 		
 		\"${DOTNET_PATH}\" \"${scannerhome}\\SonarScanner.MSBuild.dll\" begin /key:STE /d:sonar.login=${login_token}
+		\"${DOTNET_PATH}\" \"${scannerhome}\\SonarScanner.MSBuild.dll\" build \"${appname}.sln\"
+
 		\"${DOTNET_PATH}\" \"${scannerhome}\\SonarScanner.MSBuild.dll\" end /d:sonar.login=${login_token}		
 
         """ }}} // end build stage
