@@ -34,8 +34,10 @@ pipeline {
 
         """ }}} // end build stage
 
-        stage ('Copy') { steps { script { bat """
+        stage ('Copy') { 
         when { environment name: 'copy', value: 'true' }
+        steps { script { bat """
+        
 
         (for %%s in (%servers%) do (
 
